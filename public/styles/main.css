@@ -138,4 +138,10 @@ dialog h2 { font-size: 15px; margin: 0 0 14px; }
 dialog .row { display: flex; gap: 8px; margin-top: 14px; }
 dialog .row .btn { flex: 1; }
 
+#more-menu { padding: 12px; }
+#more-menu h2 { padding: 8px 10px 10px; }
+.more-menu-list { display: flex; flex-direction: column; gap: 2px; }
+.more-menu-list .nav-item { font-size: 14px; padding: 12px 10px; }
+.more-menu-list .nav-item i { font-size: 19px; width: 22px; text-align: center; }
+
 .section-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin: 22px 0 10px; text-transform: uppercase; letter-spacing: 0.5px; }

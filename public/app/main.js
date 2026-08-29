@@ -12,10 +12,10 @@ import { renderSettings } from './settings/settings.js';
 import { renderOnboarding } from './onboarding/onboarding.js';
 import { renderWorkout } from './workout/workout.js';
 
-registerRoute('dashboard', { label: 'Dashboard', icon: 'home', render: renderDashboard });
-registerRoute('today', { label: 'Meu Dia', icon: 'calendar-event', render: renderToday });
-registerRoute('financeiro', { label: 'Financeiro', icon: 'wallet', render: renderFinance });
-registerRoute('metas', { label: 'Metas', icon: 'target-arrow', render: renderGoals });
+registerRoute('dashboard', { label: 'Dashboard', icon: 'home', render: renderDashboard, primary: true });
+registerRoute('today', { label: 'Meu Dia', icon: 'calendar-event', render: renderToday, primary: true });
+registerRoute('financeiro', { label: 'Financeiro', icon: 'wallet', render: renderFinance, primary: true });
+registerRoute('metas', { label: 'Metas', icon: 'target-arrow', render: renderGoals, primary: true });
 registerRoute('growth', { label: 'Desenvolvimento', icon: 'school', render: renderGrowth });
 registerRoute('treino', { label: 'Treino', icon: 'barbell', render: renderWorkout });
 registerRoute('assistente', { label: 'Assistente', icon: 'bulb', render: renderAssistant });
