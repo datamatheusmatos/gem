@@ -15,8 +15,26 @@
 }
 * { box-sizing: border-box; }
 body {
-  margin: 0; background: var(--bg); color: var(--text);
+  margin: 0; background-color: var(--bg); color: var(--text);
   font-family: var(--font); -webkit-font-smoothing: antialiased;
+  /* Céu noturno: campo de estrelas sutil atrás do conteúdo, ladrilhado a
+     cada 420px para não repetir de forma óbvia na tela. */
+  background-image:
+    radial-gradient(1.6px 1.6px at 8% 12%, rgba(255,255,255,0.9), transparent 60%),
+    radial-gradient(1.2px 1.2px at 22% 38%, rgba(255,255,255,0.6), transparent 60%),
+    radial-gradient(1.8px 1.8px at 38% 8%, rgba(220,232,245,0.85), transparent 60%),
+    radial-gradient(1.2px 1.2px at 55% 28%, rgba(255,255,255,0.55), transparent 60%),
+    radial-gradient(1.6px 1.6px at 68% 14%, rgba(255,255,255,0.8), transparent 60%),
+    radial-gradient(1.2px 1.2px at 80% 34%, rgba(220,232,245,0.6), transparent 60%),
+    radial-gradient(1.8px 1.8px at 92% 10%, rgba(255,255,255,0.85), transparent 60%),
+    radial-gradient(1.2px 1.2px at 12% 62%, rgba(255,255,255,0.5), transparent 60%),
+    radial-gradient(1.6px 1.6px at 30% 78%, rgba(220,232,245,0.75), transparent 60%),
+    radial-gradient(1.2px 1.2px at 47% 58%, rgba(255,255,255,0.55), transparent 60%),
+    radial-gradient(1.8px 1.8px at 63% 82%, rgba(255,255,255,0.8), transparent 60%),
+    radial-gradient(1.2px 1.2px at 76% 64%, rgba(220,232,245,0.55), transparent 60%),
+    radial-gradient(1.6px 1.6px at 88% 86%, rgba(255,255,255,0.75), transparent 60%);
+  background-repeat: repeat;
+  background-size: 420px 420px;
 }
 
 /* ---------- Layout raiz ---------- */
@@ -27,8 +45,20 @@ body {
   padding: 20px 12px; display: flex; flex-direction: column; gap: 4px;
 }
 #sidebar .brand { display: flex; align-items: center; gap: 10px; padding: 6px 10px 22px; }
-#sidebar .brand svg { width: 24px; height: 24px; }
+#sidebar .brand svg {
+  width: 24px; height: 24px;
+  filter: drop-shadow(0 0 5px rgba(220,232,245,0.55));
+  animation: brand-twinkle 3.2s ease-in-out infinite;
+}
 #sidebar .brand span { font-size: 15px; font-weight: 600; }
+
+@keyframes brand-twinkle {
+  0%, 100% { filter: drop-shadow(0 0 5px rgba(220,232,245,0.5)); opacity: 0.9; }
+  50% { filter: drop-shadow(0 0 9px rgba(220,232,245,0.9)); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #sidebar .brand svg { animation: none; }
+}
 
 .nav-item {
   display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px;
@@ -36,8 +66,11 @@ body {
 }
 .nav-item:hover { background: var(--surface); color: var(--text); }
 .nav-item.active { background: var(--surface-2); color: var(--text); }
+.nav-item i { filter: drop-shadow(0 0 2px rgba(220,232,245,0.3)); transition: filter 0.2s, color 0.2s; }
+.nav-item:hover i { filter: drop-shadow(0 0 4px rgba(220,232,245,0.55)); }
+.nav-item.active i { filter: drop-shadow(0 0 6px rgba(220,232,245,0.85)); color: var(--ice); }
 .nav-item .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ice-dim); opacity: 0; }
-.nav-item.active .dot { opacity: 1; background: var(--ice); }
+.nav-item.active .dot { opacity: 1; background: var(--ice); box-shadow: 0 0 6px 1px rgba(220,232,245,0.7); }
 
 #main-content { flex: 1; min-width: 0; }
 #view-container { max-width: 720px; margin: 0 auto; padding: 24px 20px 100px; }
