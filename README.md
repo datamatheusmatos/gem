@@ -5,64 +5,71 @@ Construído seguindo os manuais anexados (`manual-deploy-cloudflare.md` e
 Este README é o ponto de entrada — cada fase tem seu próprio documento em
 `docs/`.
 
-## 🚧 Estado atual do deploy — LEIA ISTO PRIMEIRO
+## 🚧 Estado atual — LEIA ISTO PRIMEIRO
 
-O código está completo e testado (veja "Estado real do projeto" abaixo), mas
-**o deploy na Cloudflare ainda não terminou**. Histórico do que já aconteceu:
+**Atualizado em 2026-08-29, via Claude Code rodando na máquina do usuário**
+(não mais no sandbox onde o projeto foi originalmente construído). Cloudflare
+já está conectada e operacional: repositório GitHub `datamatheusmatos/gem`
+→ Worker `gem` com deploy automático a cada push, banco D1 `gem-db` com as
+tabelas criadas, Access ativo. `wrangler` está autenticado localmente
+(`dev.matheusmatos@gmail.com`) e o Node.js/`wrangler` CLI já estão instalados
+nesta máquina — dá pra rodar `npm run db:migrate:remote`, `wrangler
+deployments list`, etc. direto.
 
-1. O repositório já foi criado no GitHub e já está conectado a um projeto
-   Cloudflare Workers (deploy automático a cada push está configurado).
-2. **Primeira tentativa de build falhou**: o upload inicial dos arquivos para
-   o GitHub (feito arrastando pastas pelo navegador) não subiu tudo — as
-   pastas `src/shared/` e `src/engine/` inteiras, mais o arquivo
-   `src/db/workoutSessions.js`, ficaram de fora. O build do Cloudflare
-   acusou dezenas de erros `Could not resolve` apontando exatamente para
-   esses arquivos ausentes.
-3. Nesse mesmo diagnóstico, encontrei mais dois problemas no `package.json`
-   local, **já corrigidos**: a versão do `wrangler` estava presa em `^3.90.0`
-   (o Cloudflare instalou a 3.114.17, desatualizada — testamos tudo aqui
-   localmente com a 4.x); e os scripts `db:migrate:local`/`db:migrate:remote`
-   não incluíam a migração `0004_workouts.sql` (do módulo de treino).
-4. **Onde paramos**: o usuário ia clonar o repositório de verdade na máquina
-   dele (fora deste sandbox), copiar os arquivos que faltaram + o
-   `package.json` corrigido por cima, e dar `git push` para disparar um novo
-   build. **Não há confirmação ainda de que esse push aconteceu nem de que o
-   build passou.** A partir daqui, o usuário está usando o Claude Code, que
-   tem acesso real ao terminal/arquivos da máquina dele — este sandbox (onde
-   o projeto foi originalmente construído e testado) não tem esse acesso.
+### Checklist de deploy — tudo concluído nesta sessão
 
-### Checklist do que falta confirmar/fazer, nesta ordem
-
-- [ ] Confirmar que o repositório no GitHub tem TODOS os arquivos deste
-      projeto (comparar contagem de arquivos com o que está na pasta local —
-      deveriam ser ~124 arquivos, sem `node_modules`).
-- [ ] Confirmar que o `package.json` no GitHub já reflete a correção
-      (`"wrangler": "^4.0.0"` e as 4 migrações nos scripts) — se não, fazer
-      commit+push dessa correção.
-- [ ] Confirmar que o build mais recente no painel Cloudflare (aba
-      **Deployments** do projeto Worker) terminou com sucesso, sem os erros
-      `Could not resolve`.
-- [x] `package.json` corrigido (`wrangler` ^4.0.0 + migração 0004 nos
-      scripts) e enviado ao GitHub — build automático confirmado com sucesso
-      (deploy `ab081d2e` em 2026-08-29T11:15Z).
-- [x] `database_id` real do D1 já estava preenchido em `wrangler.jsonc`
+- [x] Todos os ~124 arquivos do projeto confirmados no GitHub (nada faltando).
+- [x] `package.json` corrigido (`wrangler` ^4.0.0 + 4 migrações nos scripts) e
+      enviado — build automático confirmado com sucesso.
+- [x] `database_id` real preenchido em `wrangler.jsonc`
       (`76628b91-2031-498e-a059-2259c6ec1ed7`), binding `env.DB` → `gem-db`
       confirmado via `wrangler d1 info`.
-- [x] As 4 migrações rodaram contra o banco remoto (`npm run
-      db:migrate:remote`) — `gem-db` foi de 0 para 38 tabelas.
+- [x] As 4 migrações rodaram contra o banco remoto — `gem-db` tem 38 tabelas.
 - [x] Cloudflare Access ativado — **método real usado**: direto na página do
       Worker (`Workers & Pages` → projeto `gem` → aba **Access** → **Protect
-      this worker behind access**), em vez do caminho manual via Zero Trust
-      descrito originalmente no guia. Isso provisiona o Zero Trust org
-      automaticamente. Política criada: **"Acesso Particular"**, restrita ao
-      e-mail `dev.matheusmatos@gmail.com`. Verificado por requisição HTTP:
-      `gem.dev-matheusmatos.workers.dev` responde com `302` para
-      `*.cloudflareaccess.com/cdn-cgi/access/login/...` (tela de login do
-      Access), confirmando a proteção ativa.
-- [ ] Testar o primeiro acesso de ponta a ponta (login por e-mail + código,
-      seção 2.7) e depois o PWA no celular (Parte 3).
+      this worker behind access**), não pelo fluxo manual do Zero Trust
+      descrito originalmente no guia (isso provisiona o Zero Trust org
+      automaticamente). Política **"Acesso Particular"**, restrita ao e-mail
+      `dev.matheusmatos@gmail.com`. Verificado via HTTP (302 para tela de
+      login do Access).
+- [ ] **Ainda falta**: testar o primeiro acesso de ponta a ponta pelo
+      navegador de verdade (login por e-mail + código OTP, seção 2.7 do
+      guia) e depois instalar/testar como PWA no celular (Parte 3 do guia).
+      Isso exige interação humana (checar e-mail, usar o celular) — não dá
+      pra automatizar.
 
 O guia completo, passo a passo, está em `docs/GUIA-DEPLOY-COMPLETO.md`.
+
+### Ajustes de produto feitos após o deploy (mesma sessão)
+
+- **Menu "Mais" no celular**: a barra inferior mostrava os 9 itens do menu
+  sem `wrap`/scroll, cortando os últimos sem forma de alcançá-los. Agora
+  mostra 4 fixos (Dashboard, Meu Dia, Financeiro, Metas) + botão "Mais" que
+  abre um diálogo com o resto. (`public/app/router.js`, `main.js`,
+  `main.css`, `index.html`)
+- **Nome do app**: título/manifest alterados para "Gem | Seja perfeito"
+  (`short_name` continua "Gem").
+- **Identidade visual**: fundo escuro decorado com campo de estrelas sutil
+  (céu noturno) e ícones com glow, mais intenso no item ativo
+  (`public/styles/main.css`). O ícone do app no celular (`icon-512-maskable.png`)
+  também ganhou as estrelas, posicionadas dentro da zona seguro do ícone
+  adaptativo do Android.
+- **Entrevista inicial (onboarding) reaberta**: pular a entrevista no primeiro
+  acesso marcava `onboardingCompleted=true` para sempre e a rota é `hidden`
+  (sem link em nenhum menu) — ficava inacessível. Agora há um botão "Refazer
+  entrevista inicial" em Configurações, e o onboarding sempre reinicia do
+  primeiro passo ao ser reaberto.
+
+### Próximos passos sugeridos
+
+1. Fazer o teste de primeiro acesso (login Access) e instalar o PWA no
+   celular — ver checklist acima.
+2. Testar o Dashboard e as telas principais contra dados reais no celular,
+   prestando atenção especial ao menu "Mais" e ao novo ícone.
+3. Retomar o desenvolvimento de frontend módulo a módulo, na ordem que fizer
+   mais sentido para o uso diário (README original sugeria: Financeiro
+   completo → Metas → Meu Dia → o restante) — ou seguir reportando ajustes
+   pontuais como os desta sessão, conforme forem aparecendo no uso real.
 
 ---
 
@@ -131,14 +138,6 @@ no teste de ponta a ponta e corrigido.
 - Testes de UI/frontend real (cliques em navegador) — não é possível baixar
   um navegador headless neste sandbox; os testes de integração cobrem a API
   que o frontend consome, não o clique em si.
-- **Deploy real na Cloudflare** — nunca foi publicado de fato, porque exige
-  acesso à sua conta. Checklist pronto em `docs/deploy.md`, execução a ser
-  feita em conjunto com você.
-
-## Como continuar a partir daqui
-
-1. Seguir o checklist de `docs/deploy.md` para publicar o que já existe.
-2. Testar o Dashboard real contra dados reais.
-3. Retomar o desenvolvimento de frontend módulo a módulo, na ordem que fizer
-   mais sentido para o seu uso diário (provavelmente: Financeiro completo →
-   Metas → Meu Dia → o restante).
+- **Deploy real na Cloudflare** — feito nesta sessão (ver seção "Estado
+  atual" no topo deste README para o histórico completo e o que ainda falta
+  testar manualmente).
