@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gem — Gestão financeira e pessoal</title>
+
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0B0B0D">
+<link rel="icon" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gem">
+
+<link rel="stylesheet" href="/public/styles/main.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.46.0/tabler-icons.min.css">
+</head>
+<body>
+
+<div id="app-shell">
+  <aside id="sidebar">
+    <div class="brand">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <polygon points="50,4 90,50 50,96 10,50" fill="none" stroke="#DCE8F5" stroke-width="4"/>
+        <polygon points="50,28 72,50 50,72 28,50" fill="#DCE8F5" opacity="0.85"/>
+      </svg>
+      <span>Gem</span>
+    </div>
+    <nav id="sidebar-nav"></nav>
+  </aside>
+
+  <main id="main-content">
+    <div id="view-container"></div>
+  </main>
+</div>
+
+<nav id="bottom-nav">
+  <div class="nav-row" id="bottom-nav-row"></div>
+</nav>
+
+<script type="module" src="/public/app/main.js"></script>
+</body>
+</html>

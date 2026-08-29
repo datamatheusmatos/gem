@@ -1,0 +1,19 @@
+{
+  "name": "gem",
+  "compatibility_date": "2026-08-01",
+  "main": "_worker.js",
+  "assets": {
+    "directory": "./",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "gem-db",
+      "database_id": "76628b91-2031-498e-a059-2259c6ec1ed7"
+    }
+  ]
+  // KV removido: a identidade do usuário agora vem do Cloudflare Access
+  // (Cf-Access-Authenticated-User-Email), não há sessão própria para guardar.
+  // Reintroduzir aqui se surgir necessidade concreta de cache/preferências.
+}
