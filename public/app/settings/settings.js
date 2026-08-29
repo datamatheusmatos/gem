@@ -25,6 +25,12 @@ export async function renderSettings(container) {
       <div class="form-msg" id="settings-msg"></div>
     </form>
 
+    <div class="section-title">Entrevista inicial</div>
+    <div class="card">
+      <p class="page-subtitle" style="margin-top:0;">Pulou (ou não terminou) as perguntas de boas-vindas no primeiro acesso? Você pode refazer a qualquer momento — nada do que já está cadastrado é apagado.</p>
+      <button class="btn btn-secondary btn-block" id="redo-onboarding-btn">Refazer entrevista inicial</button>
+    </div>
+
     <div class="section-title">Backup e restauração</div>
     <div class="card">
       <p class="page-subtitle" style="margin-top:0;">Exporte seus dados regularmente — é a única forma de recuperá-los se algo der errado.</p>
@@ -37,6 +43,10 @@ export async function renderSettings(container) {
       <div class="form-msg" id="backup-msg"></div>
     </div>
   `;
+
+  document.getElementById('redo-onboarding-btn').onclick = () => {
+    location.hash = 'onboarding';
+  };
 
   document.getElementById('export-json-btn').onclick = () => {
     window.location.href = '/api/backup/export';

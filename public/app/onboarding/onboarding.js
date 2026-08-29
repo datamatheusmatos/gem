@@ -8,6 +8,9 @@ const STEPS = ['boas-vindas', 'renda', 'despesas-fixas', 'dividas', 'reserva-met
 let currentStepIndex = 0;
 
 export async function renderOnboarding(container) {
+  // Reinicia sempre do começo: a rota é acessada tanto no primeiro acesso
+  // quanto, depois, por um link em Configurações para refazer a entrevista.
+  currentStepIndex = 0;
   renderStep(container);
 }
 
