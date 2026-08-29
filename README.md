@@ -5,6 +5,56 @@ Construído seguindo os manuais anexados (`manual-deploy-cloudflare.md` e
 Este README é o ponto de entrada — cada fase tem seu próprio documento em
 `docs/`.
 
+## 🚧 Estado atual do deploy — LEIA ISTO PRIMEIRO
+
+O código está completo e testado (veja "Estado real do projeto" abaixo), mas
+**o deploy na Cloudflare ainda não terminou**. Histórico do que já aconteceu:
+
+1. O repositório já foi criado no GitHub e já está conectado a um projeto
+   Cloudflare Workers (deploy automático a cada push está configurado).
+2. **Primeira tentativa de build falhou**: o upload inicial dos arquivos para
+   o GitHub (feito arrastando pastas pelo navegador) não subiu tudo — as
+   pastas `src/shared/` e `src/engine/` inteiras, mais o arquivo
+   `src/db/workoutSessions.js`, ficaram de fora. O build do Cloudflare
+   acusou dezenas de erros `Could not resolve` apontando exatamente para
+   esses arquivos ausentes.
+3. Nesse mesmo diagnóstico, encontrei mais dois problemas no `package.json`
+   local, **já corrigidos**: a versão do `wrangler` estava presa em `^3.90.0`
+   (o Cloudflare instalou a 3.114.17, desatualizada — testamos tudo aqui
+   localmente com a 4.x); e os scripts `db:migrate:local`/`db:migrate:remote`
+   não incluíam a migração `0004_workouts.sql` (do módulo de treino).
+4. **Onde paramos**: o usuário ia clonar o repositório de verdade na máquina
+   dele (fora deste sandbox), copiar os arquivos que faltaram + o
+   `package.json` corrigido por cima, e dar `git push` para disparar um novo
+   build. **Não há confirmação ainda de que esse push aconteceu nem de que o
+   build passou.** A partir daqui, o usuário está usando o Claude Code, que
+   tem acesso real ao terminal/arquivos da máquina dele — este sandbox (onde
+   o projeto foi originalmente construído e testado) não tem esse acesso.
+
+### Checklist do que falta confirmar/fazer, nesta ordem
+
+- [ ] Confirmar que o repositório no GitHub tem TODOS os arquivos deste
+      projeto (comparar contagem de arquivos com o que está na pasta local —
+      deveriam ser ~124 arquivos, sem `node_modules`).
+- [ ] Confirmar que o `package.json` no GitHub já reflete a correção
+      (`"wrangler": "^4.0.0"` e as 4 migrações nos scripts) — se não, fazer
+      commit+push dessa correção.
+- [ ] Confirmar que o build mais recente no painel Cloudflare (aba
+      **Deployments** do projeto Worker) terminou com sucesso, sem os erros
+      `Could not resolve`.
+- [ ] **Retomar exatamente daqui**: seção "2.4 Colar o ID do banco no código"
+      de `docs/deploy.md` (ou `docs/GUIA-DEPLOY-COMPLETO.md`, versão mais
+      detalhada) — editar `wrangler.jsonc`, colocar o `database_id` real do
+      D1 (criado no passo 2.2), commit, e confirmar na aba **Bindings** do
+      projeto Worker que `env.DB` aparece apontando para `gem-db`.
+- [ ] Rodar as 4 migrações contra o banco remoto (seção 2.5 do guia).
+- [ ] Ativar o Cloudflare Access (seção 2.6).
+- [ ] Testar o primeiro acesso (seção 2.7) e depois o PWA no celular (Parte 3).
+
+O guia completo, passo a passo, está em `docs/GUIA-DEPLOY-COMPLETO.md`.
+
+---
+
 ## Stack (100% gratuita — verificado em agosto/2026)
 
 Cloudflare Workers + D1 (SQLite gerenciado, free tier permanente) + Cloudflare
