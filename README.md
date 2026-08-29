@@ -42,14 +42,25 @@ O código está completo e testado (veja "Estado real do projeto" abaixo), mas
 - [ ] Confirmar que o build mais recente no painel Cloudflare (aba
       **Deployments** do projeto Worker) terminou com sucesso, sem os erros
       `Could not resolve`.
-- [ ] **Retomar exatamente daqui**: seção "2.4 Colar o ID do banco no código"
-      de `docs/deploy.md` (ou `docs/GUIA-DEPLOY-COMPLETO.md`, versão mais
-      detalhada) — editar `wrangler.jsonc`, colocar o `database_id` real do
-      D1 (criado no passo 2.2), commit, e confirmar na aba **Bindings** do
-      projeto Worker que `env.DB` aparece apontando para `gem-db`.
-- [ ] Rodar as 4 migrações contra o banco remoto (seção 2.5 do guia).
-- [ ] Ativar o Cloudflare Access (seção 2.6).
-- [ ] Testar o primeiro acesso (seção 2.7) e depois o PWA no celular (Parte 3).
+- [x] `package.json` corrigido (`wrangler` ^4.0.0 + migração 0004 nos
+      scripts) e enviado ao GitHub — build automático confirmado com sucesso
+      (deploy `ab081d2e` em 2026-08-29T11:15Z).
+- [x] `database_id` real do D1 já estava preenchido em `wrangler.jsonc`
+      (`76628b91-2031-498e-a059-2259c6ec1ed7`), binding `env.DB` → `gem-db`
+      confirmado via `wrangler d1 info`.
+- [x] As 4 migrações rodaram contra o banco remoto (`npm run
+      db:migrate:remote`) — `gem-db` foi de 0 para 38 tabelas.
+- [x] Cloudflare Access ativado — **método real usado**: direto na página do
+      Worker (`Workers & Pages` → projeto `gem` → aba **Access** → **Protect
+      this worker behind access**), em vez do caminho manual via Zero Trust
+      descrito originalmente no guia. Isso provisiona o Zero Trust org
+      automaticamente. Política criada: **"Acesso Particular"**, restrita ao
+      e-mail `dev.matheusmatos@gmail.com`. Verificado por requisição HTTP:
+      `gem.dev-matheusmatos.workers.dev` responde com `302` para
+      `*.cloudflareaccess.com/cdn-cgi/access/login/...` (tela de login do
+      Access), confirmando a proteção ativa.
+- [ ] Testar o primeiro acesso de ponta a ponta (login por e-mail + código,
+      seção 2.7) e depois o PWA no celular (Parte 3).
 
 O guia completo, passo a passo, está em `docs/GUIA-DEPLOY-COMPLETO.md`.
 

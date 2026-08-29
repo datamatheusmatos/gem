@@ -105,6 +105,26 @@ Node.js instalado no seu computador ([nodejs.org](https://nodejs.org), baixe a v
    Cada comando deve terminar mostrando `"success": true`.
 
 ### 2.6 Ativar o Cloudflare Access (login por e-mail)
+
+**Nota (feito em 2026-08-29):** na prática, o caminho mais direto foi pular a
+etapa manual do Zero Trust e ativar direto pela página do Worker — a
+Cloudflare provisiona o Zero Trust org automaticamente por trás dos panos.
+Passos usados de fato:
+
+1. **Workers & Pages** → projeto `gem` → aba **Access** → **Protect this
+   worker behind access**.
+2. Isso cria automaticamente uma política — em **Access controls** →
+   **Policies**, criada a política **"Acesso Particular"**.
+3. No critério da regra, seletor **"Emails"** (não "Email domain") com o
+   e-mail `dev.matheusmatos@gmail.com`.
+4. Verificado via HTTP: a URL do worker responde `302` redirecionando para
+   `*.cloudflareaccess.com/cdn-cgi/access/login/...`, confirmando a proteção
+   ativa. O One-time PIN já vem habilitado por padrão nesse fluxo — não foi
+   necessário configurar manualmente em Settings → Authentication.
+
+Passos originais (alternativa, caso o atalho acima não apareça no seu
+painel):
+
 1. No painel, vá em **Zero Trust** (aparece no menu lateral principal, ou em `one.dash.cloudflare.com`).
 2. Se for a primeira vez, escolha um nome de equipe (qualquer nome, ex.: `seunome-pdi`) — isso cria sua URL do Zero Trust.
 3. Menu lateral → **Settings** → **Authentication** → **Login methods** → **Add new** → escolha **One-time PIN** → **Save**.
